@@ -230,16 +230,50 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Cuadernos'),
-        centerTitle: true,
-      ),
-      body: books.isEmpty
+   title: const Text(
+    'DAYLI',
+    style: TextStyle(
+      fontStyle: FontStyle.italic,
+      fontSize: 60,
+      fontWeight: FontWeight.bold,
+      color: Colors.black, // Cambio a blanco para contraste
+      letterSpacing: 2, // Espaciado para un look más estilizado
+    ),
+  ),
+
+  centerTitle: true,
+  backgroundColor: Colors.transparent,
+  elevation: 0,
+  leading: IconButton(
+    icon: const Icon(Icons.help_outline, color: Colors.black, size: 30),
+    onPressed: () {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("¿Cómo editar un libro?"),
+          content: const Text("Para editar un libro, simplemente déjalo presionado."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Entendido"),
+            ),
+          ],
+        ),
+      );
+    },
+  ),
+
+
+),
+
+    body: books.isEmpty
     ? const Center(
         child: Text(
           'Crea un Diario',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),
         ),
       )
+
     : Column(
         children: [
           const SizedBox(height: 50), // Espaciado superior para centrar mejor
@@ -273,20 +307,25 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 10),
+        
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: books.asMap().entries.map((entry) {
-              return Container(
-                width: 8.0,
-                height: 8.0,
-                margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _currentIndex == entry.key ? Colors.blueAccent : Colors.grey,
-                ),
-              );
-            }).toList(),
-          ),
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: books.asMap().entries.map((entry) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      width: _currentIndex == entry.key ? 12.0 : 8.0,
+      height: _currentIndex == entry.key ? 12.0 : 8.0,
+      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: _currentIndex == entry.key ? Colors.black : Colors.grey,
+        boxShadow: _currentIndex == entry.key
+            ? [BoxShadow(color: Colors.black26, blurRadius: 4)]
+            : [],
+      ),
+    );
+  }).toList(),
+),
         ],
       ),
       floatingActionButton: FloatingActionButton(

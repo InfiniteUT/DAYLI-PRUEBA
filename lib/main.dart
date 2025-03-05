@@ -13,7 +13,25 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Diario Interactivo',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
+        scaffoldBackgroundColor: Colors.grey[200],
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.indigo,
+          titleTextStyle: TextStyle(
+            fontSize: 20, 
+            fontWeight: FontWeight.bold, 
+            color: Colors.white
+          ),
+          centerTitle: true,
+          elevation: 5,
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.indigo,
+          foregroundColor: Colors.white,
+          elevation: 4,
+        ),
+      ),
       home: const HomeScreen(),
     );
   }
