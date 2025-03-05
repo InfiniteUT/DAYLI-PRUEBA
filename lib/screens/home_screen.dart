@@ -5,6 +5,8 @@ import '../models/book.dart';
 import '../widgets/book_card.dart';
 import 'book_screen.dart';
 
+
+
 typedef Books = List<Book>;
 
 class HomeScreen extends StatefulWidget {
@@ -230,16 +232,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-   title: const Text(
-    'DAYLI',
-    style: TextStyle(
-      fontStyle: FontStyle.italic,
-      fontSize: 60,
-      fontWeight: FontWeight.bold,
-      color: Colors.black, // Cambio a blanco para contraste
-      letterSpacing: 2, // Espaciado para un look más estilizado
-    ),
+   title: Text(
+  'DAYLI',
+  style: const TextStyle(
+    fontFamily: 'MagicRetro',
+    fontSize: 50,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+    letterSpacing: 2,
   ),
+),
 
   centerTitle: true,
   backgroundColor: Colors.transparent,
