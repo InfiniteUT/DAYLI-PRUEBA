@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Diario Interactivo',
       theme: ThemeData(
         primarySwatch: Colors.indigo,
-        scaffoldBackgroundColor: Colors.grey[200],
+        scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.indigo,
           titleTextStyle: TextStyle(
@@ -32,7 +33,10 @@ class MyApp extends StatelessWidget {
           elevation: 4,
         ),
       ),
-      home: const HomeScreen(),
+      home: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: LoginScreen(),
+      ),
     );
   }
 }

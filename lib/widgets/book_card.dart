@@ -21,13 +21,14 @@ class BookCard extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            width: 150,
-            height: 200,
+            width: 400,
+            height: 900,
             decoration: BoxDecoration(
               color: book.color,
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
+                  // ignore: deprecated_member_use
                   color: Colors.black.withOpacity(0.3),
                   offset: Offset(4, 4),
                   blurRadius: 8,

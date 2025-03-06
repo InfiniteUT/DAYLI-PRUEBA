@@ -9,10 +9,10 @@ class BookScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _controller = TextEditingController(text: book.content);
+    TextEditingController controller = TextEditingController(text: book.content);
 
-    void _saveContent() {
-      book.content = _controller.text;
+    void saveContent() {
+      book.content = controller.text;
       onSave();
     }
 
@@ -27,6 +27,7 @@ class BookScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: Colors.grey.withOpacity(0.3),
               spreadRadius: 2,
               blurRadius: 5,
@@ -44,13 +45,13 @@ class BookScreen extends StatelessWidget {
               ),
             ),
             TextField(
-              controller: _controller,
+              controller: controller,
               maxLines: null,
               decoration: const InputDecoration(
                 hintText: 'Escribe aquí...',
                 border: InputBorder.none,
               ),
-              onChanged: (text) => _saveContent(),
+              onChanged: (text) => saveContent(),
             ),
           ],
         ),

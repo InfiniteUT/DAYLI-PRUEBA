@@ -4,8 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/book.dart';
 import '../widgets/book_card.dart';
 import 'book_screen.dart';
-
-
+import 'login_screen.dart';
 
 typedef Books = List<Book>;
 
@@ -13,10 +12,12 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String _userName = "Usuario";
   List<Book> books = [];
   int _currentIndex = 0;
 
@@ -60,13 +61,62 @@ class _HomeScreenState extends State<HomeScreen> {
     Icons.computer,
     Icons.memory,
     Icons.smartphone,
+    Icons.auto_awesome,
+    Icons.sports_esports,
+    Icons.sports_soccer,  
+    Icons.sports_basketball,
+    Icons.sports_tennis,
+    Icons.sports_volleyball,
+    Icons.sports_rugby,
+    Icons.sports_cricket,
+    Icons.star,
+    Icons.star_border,
+    Icons.star_half,
+    Icons.favorite,
+    Icons.favorite_border,
+    Icons.thumb_up,
+    Icons.thumb_down,
+    Icons.thumb_up_alt,
   ];
 
   @override
   void initState() {
     super.initState();
     _loadBooks();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    _loadUserName();
+    _checkUserName();
+  });
   }
+
+  Future<void> _checkUserName() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? savedName = prefs.getString('userName');
+  if (savedName == null) {
+    String? userName = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) =>  LoginScreen()),
+    );
+    if (userName != null) {
+      setState(() {
+        _userName = userName;
+      });
+    }
+  } else {
+    setState(() {
+      _userName = savedName;
+    });
+  }
+}
+
+  Future<void> _loadUserName() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? savedName = prefs.getString('userName');
+  print("Nombre cargado: $savedName");  // <---- DEBUG
+  setState(() {
+    _userName = savedName ?? "Usuario";
+  });
+}
 
   Future<void> _loadBooks() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -89,7 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _saveBooks() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final List<String> bookData = books.map((book) {
-      return '${book.title}|${book.color.value}|${book.content}|${availableIcons.indexOf(book.icon)}';
+      // ignore: deprecated_member_use
+      return '${book.title}|${book.color}|${book.content}|${availableIcons.indexOf(book.icon)}';
     }).toList();
     await prefs.setStringList('books', bookData);
   }
@@ -136,24 +187,42 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                  'Colors:',
+                  style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Wrap(
-                  spacing: 8,
+                  spacing: 10,
                   children: availableColors.map((color) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedColor = color;
-                        });
-                      },
-                      child: CircleAvatar(
-                        backgroundColor: color,
-                        radius: 15,
-                        child: selectedColor == color
-                            ? const Icon(Icons.check, color: Colors.white)
-                            : null,
-                      ),
-                    );
+                  return GestureDetector(
+                    onTap: () {
+                    setState(() {
+                      selectedColor = color;
+                    });
+                    },
+                    child: Padding(
+                    padding: const EdgeInsets.only(bottom: 5),
+                    child: CircleAvatar(
+                      backgroundColor: color,
+                      radius: 15,
+                      child: selectedColor == color
+                        ? const Icon(Icons.check, color: Color.fromARGB(255, 255, 255, 255))
+                        : null,
+                    ),
+                    ),
+                  );
                   }).toList(),
+                ),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                  'Icons:',
+                  style: TextStyle(fontSize: 16),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Wrap(
@@ -232,25 +301,28 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-   title: Text(
-  'DAYLI',
-  style: const TextStyle(
-    fontFamily: 'MagicRetro',
-    fontSize: 50,
-    fontWeight: FontWeight.bold,
-    color: Colors.black,
-    letterSpacing: 2,
-  ),
-),
-
-  centerTitle: true,
-  backgroundColor: Colors.transparent,
-  elevation: 0,
-  leading: IconButton(
-    icon: const Icon(Icons.help_outline, color: Colors.black, size: 30),
-    onPressed: () {
-      showDialog(
-        context: context,
+        title: Column(
+          children: [
+             Text(
+              'Daily',
+              style: TextStyle(
+                fontFamily: 'MagicRetro',
+                fontSize: 50,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                letterSpacing: 2,
+              ),
+            ),            
+          ],
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.help_outline, color: Colors.black, size: 30),
+          onPressed: () {
+            showDialog(
+              context: context,
         builder: (context) => AlertDialog(
           title: const Text("¿Cómo editar un libro?"),
           content: const Text("Para editar un libro, simplemente déjalo presionado."),
@@ -268,68 +340,79 @@ class _HomeScreenState extends State<HomeScreen> {
 
 ),
 
-    body: books.isEmpty
-    ? const Center(
-        child: Text(
-          'Crea un Diario',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),
-        ),
-      )
-
-    : Column(
-        children: [
-          const SizedBox(height: 50), // Espaciado superior para centrar mejor
-          Expanded(
-            child: CarouselSlider.builder(
-              itemCount: books.length,
-              itemBuilder: (context, index, realIndex) {
-                return BookCard(
-                  book: books[index],
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BookScreen(book: books[index], onSave: _saveBooks),
-                      ),
+    body: Padding(
+      padding:  EdgeInsets.all(100.0),
+      child: books.isEmpty
+        ?  Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '¡Bienvenido a Daily $_userName!', 
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 158, 158, 158)),
+              ),
+              Text(
+                'Crea un nuevo diario', 
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 158, 158, 158)),
+              ),
+            ],
+          ),
+        )
+        : Column(
+            children: [
+              const SizedBox(height: 10), // Espaciado superior para centrar mejor
+              Expanded(
+                child: CarouselSlider.builder(
+                  itemCount: books.length,
+                  itemBuilder: (context, index, realIndex) {
+                    return BookCard(
+                      book: books[index],
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookScreen(book: books[index], onSave: _saveBooks),
+                          ),
+                        );
+                      },
+                      onLongPress: () => _editBook(index),
                     );
                   },
-                  onLongPress: () => _editBook(index),
-                );
-              },
-              options: CarouselOptions(
-                height: 300, // Ajuste de altura para centrar mejor
-                enlargeCenterPage: true,
-                autoPlay: books.length > 1,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
+                  options: CarouselOptions(
+                    height: 450, // Ajuste de altura para centrar mejor
+                    enlargeCenterPage: true,
+                    autoPlay: books.length > 1,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(height: 10),
+            
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: books.asMap().entries.map((entry) {
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    width: _currentIndex == entry.key ? 12.0 : 8.0,
+                    height: _currentIndex == entry.key ? 12.0 : 8.0,
+                    margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _currentIndex == entry.key ? Colors.black : Colors.grey,
+                      boxShadow: _currentIndex == entry.key
+                          ? [BoxShadow(color: Colors.black26, blurRadius: 4)]
+                          : [],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
-          const SizedBox(height: 10),
-        
-          Row(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: books.asMap().entries.map((entry) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      width: _currentIndex == entry.key ? 12.0 : 8.0,
-      height: _currentIndex == entry.key ? 12.0 : 8.0,
-      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: _currentIndex == entry.key ? Colors.black : Colors.grey,
-        boxShadow: _currentIndex == entry.key
-            ? [BoxShadow(color: Colors.black26, blurRadius: 4)]
-            : [],
-      ),
-    );
-  }).toList(),
-),
-        ],
-      ),
+    ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addBook,
         child: const Icon(Icons.add),
