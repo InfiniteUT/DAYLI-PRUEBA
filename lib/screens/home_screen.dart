@@ -1,11 +1,12 @@
- import 'package:flutter/material.dart';
+// ignore: prefer_typing_uninitialized_variables, non_constant_identifier_names
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/book.dart';
 import '../widgets/book_card.dart';
 import 'book_screen.dart';
 import 'login_screen.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 
 
@@ -100,6 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? savedName = prefs.getString('userName');
   if (savedName == null) {
     String? userName = await Navigator.push(
+      // ignore: use_build_context_synchronously
       context,
       MaterialPageRoute(builder: (context) =>  LoginScreen()),
     );
@@ -118,7 +120,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadUserName() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String? savedName = prefs.getString('userName');
-  print("Nombre cargado: $savedName");  // <---- DEBUG
+  if (kDebugMode) {
+    print("Nombre cargado: $savedName");
+  }  // <---- DEBUG
   setState(() {
     _userName = savedName ?? "Usuario";
   });
@@ -304,19 +308,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-double _rating = 3.0; // Valor inicial
+// Valor inicial
 
 Future<void> _loadRating() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
   setState(() {
-    _rating = prefs.getDouble('user_rating') ?? 3.0; // Si no hay valor guardado, usa 3.0
+// Si no hay valor guardado, usa 3.0
   });
 }
 
-Future<void> _saveRating(double rating) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setDouble('user_rating', rating);
-}
 
 
 
@@ -347,58 +346,24 @@ Future<void> _saveRating(double rating) async {
           onPressed: () {
             showDialog(
               context: context,
-        builder: (context) => AlertDialog(
-          title: const Text("¿Cómo editar un libro?"),
-          content: const Text("Para editar un libro, simplemente déjalo presionado."),
-          actions: [
-  IconButton(
-    icon: const Icon(Icons.star, color: Colors.black, size: 30),
-    onPressed: () {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text("Califica la app"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text("¿Cuántas estrellas le das a la app?"),
-              const SizedBox(height: 10),
-              RatingBar.builder(
-  initialRating: _rating,
-  minRating: 1,
-  direction: Axis.horizontal,
-  allowHalfRating: true,
-  itemCount: 5,
-  itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-  itemBuilder: (context, _) => const Icon(
-    Icons.star,
-    color: Colors.amber,
-  ),
-  onRatingUpdate: (rating) {
-    setState(() {
-      _rating = rating;
-    });
-    _saveRating(rating);  // Guarda el rating en SharedPreferences
+    builder: (context) => AlertDialog(
+    backgroundColor: Colors.white,
+    title: const Text("¿Cómo editar un libro?"),
+    content: const Text("Para editar un libro, simplemente déjalo presionado."),
+      actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        style: ButtonStyle(
+        overlayColor: WidgetStateProperty.all<Color>(const Color.fromARGB(255, 213, 213, 213)),
+        foregroundColor: WidgetStateProperty.all<Color>(const Color.fromARGB(255, 0, 0, 0)),
+        ),
+        child: const Text("Entendido"),
+      ),
+      ],
+    ),
+  );
   },
 ),
-
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cerrar"),
-            ),
-          ],
-        ),
-      );
-    },
-  ),
-],
-        ),
-      );
-    },
-  ),
 
 
 ),
@@ -478,8 +443,10 @@ Future<void> _saveRating(double rating) async {
     ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addBook,
+        backgroundColor: const Color.fromARGB(255, 7, 37, 61),
         child: const Icon(Icons.add),
       ),
     );
   }
+  
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 
 void main() {
@@ -15,10 +14,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Diario Interactivo',
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
+        primarySwatch: Colors.grey,
         scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.indigo,
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
           titleTextStyle: TextStyle(
             fontSize: 20, 
             fontWeight: FontWeight.bold, 
@@ -28,7 +27,7 @@ class MyApp extends StatelessWidget {
           elevation: 5,
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Colors.indigo,
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
           foregroundColor: Colors.white,
           elevation: 4,
         ),

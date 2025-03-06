@@ -3,7 +3,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart'; // Importa la pantalla principal
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -16,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('userName', name);
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()), // Ir a la pantalla principal
       );
